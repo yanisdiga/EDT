@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDT</title>
+    <link rel="icon" type="image" href="images/calendar.png">
+    <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+<body>
+    <div class="top">
+        <div class="choose-edt">
+            <div class="choosed-edt">
+                <h2>Emploi du temps : <span ch></span><span id="choosed-group"></span></h2>
+            </div>
+            <div class="change">
+                <div class="dropdown">
+                    <button class="btn dropbtn" id="dropdown-group">Changer de groupe</button>
+                    <div class="dropdown-content">
+                        <ul class="groups">
+                            <p>L3</p>
+                            <li class="group" id="l3cils">L3 - CILS</li>
+                            <li class="group" id="l3asr">L3 - ASR</li>
+                            <li class="group" id="l3miai">L3 - MIAGE I</li>
+                            <li class="group" id="l3miaa">L3 - MIAGE A</li>
+                            <p>L2</p>
+                            <li class="group" id="l2infog1">L2 - G1</li>
+                            <li class="group" id="l2infog2">L2 - G2</li>
+                            <li class="group" id="l2infog3">L2 - G3</li>
+                            <li class="group" id="l2infog4">L2 - G4</li>
+                            <p>L1</p>
+                            <li class="group" id="l1portailmi_g1">L1 - G1</li>
+                            <li class="group" id="l1portailmi_g2">L1 - G2</li>
+                            <li class="group" id="l1portailmi_g3">L1 - G3</li>
+                            <li class="group" id="l1portailmi_g4">L1 - G4</li>
+                            <li class="group" id="l1portailmi_g5">L1 - G5</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="display">
+        <div class="monday">LUNDI <span id="monday">4/9</span></div>
+        <div class="tuesday">MARDI <span id="tuesday">5/9</span></div>
+        <div class="wednesday">MERCREDI <span id="wednesday">6/9</span></div>
+        <div class="thursday">JEUDI <span id="thursday">7/9</span></div>
+        <div class="friday">VENDREDI <span id="friday">8/9</span></div>
+            <div class="hour" id="8h00" data-row="2" style="grid-row: 2/3;">8h00</div>
+            <div class="hour" id="8h15" data-row="3" style="grid-row: 3/4;"></div>
+            <div class="hour" id="8h30" data-row="4" style="grid-row: 4/5;">8h30</div>
+            <div class="hour" id="8h45" data-row="5" style="grid-row: 5/6;"></div>
+            <div class="hour" id="9h00" data-row="6" style="grid-row: 6/7;">9h00</div>
+            <div class="hour" id="9h15" data-row="7" style="grid-row: 7/8;"></div>
+            <div class="hour" id="9h30" data-row="8" style="grid-row: 8/9;">9h30</div>
+            <div class="hour" id="9h45" data-row="9" style="grid-row: 9/10;"></div>
+            <div class="hour" id="10h00" data-row="10" style="grid-row: 10/11;">10h00</div>
+            <div class="hour" id="10h15" data-row="11" style="grid-row: 11/12;"></div>
+            <div class="hour" id="10h30" data-row="12" style="grid-row: 12/13;">10h30</div>
+            <div class="hour" id="10h45" data-row="13" style="grid-row: 13/14;"></div>
+            <div class="hour" id="11h00" data-row="14" style="grid-row: 14/15;">11h00</div>
+            <div class="hour" id="11h15" data-row="15" style="grid-row: 15/16;"></div>
+            <div class="hour" id="11h30" data-row="16" style="grid-row: 16/17;">11h30</div>
+            <div class="hour" id="11h45" data-row="17" style="grid-row: 17/18;"></div>
+            <div class="hour" id="12h00" data-row="18" style="grid-row: 18/19;">12h00</div>
+            <div class="hour" id="12h15" data-row="19" style="grid-row: 19/20;"></div>
+            <div class="hour" id="12h30" data-row="20" style="grid-row: 20/21;">12h30</div>
+            <div class="hour" id="12h45" data-row="21" style="grid-row: 21/22;"></div>
+            <div class="hour" id="13h00" data-row="22" style="grid-row: 22/23;">13h00</div>
+            <div class="hour" id="13h15" data-row="23" style="grid-row: 23/24;"></div>
+            <div class="hour" id="13h30" data-row="24" style="grid-row: 24/25;">13h30</div>
+            <div class="hour" id="13h45" data-row="25" style="grid-row: 25/26;"></div>
+            <div class="hour" id="14h00" data-row="26" style="grid-row: 26/27;">14h00</div>
+            <div class="hour" id="14h15" data-row="27" style="grid-row: 27/28;"></div>
+            <div class="hour" id="14h30" data-row="28" style="grid-row: 28/29;">14h30</div>
+            <div class="hour" id="14h45" data-row="29" style="grid-row: 29/30;"></div>
+            <div class="hour" id="15h00" data-row="30" style="grid-row: 30/31;">15h00</div>
+            <div class="hour" id="15h15" data-row="31" style="grid-row: 31/32;"></div>
+            <div class="hour" id="15h30" data-row="32" style="grid-row: 32/33;">15h30</div>
+            <div class="hour" id="15h45" data-row="33" style="grid-row: 33/34;"></div>
+            <div class="hour" id="16h00" data-row="34" style="grid-row: 34/35;">16h00</div>
+            <div class="hour" id="16h15" data-row="35" style="grid-row: 35/36;"></div>
+            <div class="hour" id="16h30" data-row="36" style="grid-row: 36/37;">16h30</div>
+            <div class="hour" id="16h45" data-row="37" style="grid-row: 37/38;"></div>
+            <div class="hour" id="17h00" data-row="38" style="grid-row: 38/39;">17h00</div>
+            <div class="hour" id="17h15" data-row="39" style="grid-row: 39/40;"></div>
+            <div class="hour" id="17h30" data-row="40" style="grid-row: 40/41;">17h30</div>
+            <div class="hour" id="17h45" data-row="41" style="grid-row: 41/42;"></div>
+            <div class="hour" id="18h00" data-row="42" style="grid-row: 42/43;">18h00</div>
+            <div class="hour" id="18h15" data-row="43" style="grid-row: 43/44;"></div>
+            <div class="hour" id="18h30" data-row="44" style="grid-row: 44/45;">18h30</div>
+            <div class="hour" id="18h45" data-row="45" style="grid-row: 45/46;"></div>
+            <div class="hour" id="19h00" data-row="46" style="grid-row: 46/47;">19h00</div>
+            <div class="hour" id="19h15" data-row="47" style="grid-row: 47/48;"></div>
+            <div class="hour" id="19h30" data-row="48" style="grid-row: 48/49;">19h30</div>
+            <div class="hour" id="19h45" data-row="49" style="grid-row: 49/50;"></div>
+            <div class="hour" id="20h00" data-row="50" style="grid-row: 50/51;">20h00</div>
+    </div>
+    <div class="bottom">
+        <div class="weeks">
+            <button class="btn" id="previous-week">Précédent</button>
+            <button class="btn" id="start-week"><<</button>
+            <div class="d-week">
+                <button class="btn" id="first-week">1</button>
+                <button class="btn" id="second-week">2</button>
+                <button class="btn" id="third-week">3</button>
+            </div>
+            <button class="btn" id="end-week">>></button>
+            <button class="btn" id="next-week">Suivant</button>
+        </div>
+    </div>
+    <script src="node_modules/ical.js/build/ical.js"></script>
+    <script src="javascripts/app.js"></script>
+</body>
+</html>

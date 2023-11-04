@@ -1,0 +1,21 @@
+{
+  "name": "edt",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "ical.js": "^1.5.0",
+    "morgan": "~1.9.1",
+    "path": "^0.12.7"
+  },
+  "description": "edt for univ evry",
+  "main": "server.js",
+  "author": "yanisdiga",
+  "license": "ISC"
+}
