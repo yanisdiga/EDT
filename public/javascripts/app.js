@@ -132,7 +132,7 @@ function edtLoad() {
                         const hours = document.querySelectorAll('.hour');
                         hours.forEach((hour) => {
                             const timeStart = parseInt(timePartStart.substring(0, 2), 10) + "h" + timePartStart.substring(3, 5);
-                            if (week == weekNumber && year == 2023 && (hour.id == timeStart)) {
+                            if (week == weekNumber && year == yearNumber && (hour.id == timeStart)) {
                                 lessonContainer.style.gridRowStart = parseInt(hour.dataset.row);
                                 lessonContainer.style.gridRowEnd = parseInt(hour.dataset.row) + timePartDuration;
                                 //lessonContainer.style.gridRowEnd = parseInt(hour.dataset.row) + 3;
@@ -194,6 +194,7 @@ const currentdate = new Date();
 let oneJan = new Date(currentdate.getFullYear(), 0, 1);
 let numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
 let weekNumber = Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
+const yearNumber = currentdate.getFullYear();
 
 const btnFirstWeek = document.getElementById('first-week');
 const btnSecondWeek = document.getElementById('second-week');
