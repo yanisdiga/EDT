@@ -32,9 +32,11 @@ groupButton.forEach((button) => {
         localStorage.setItem('selectedGroup', group);
     });
 });
+//Utilisation de proxy pour bypass le CORS
+const prefix = "http://localhost:8080/";
 
 function edtLoad() {
-    fetch(`https://edt-api.obstinate.fr/${group}` /*`https://edt.univ-evry.fr/icsetudiant/${group}_etudiant(e).ics`*/)
+    fetch(`${prefix}https://edt.univ-evry.fr/icsetudiant/${group}_etudiant(e).ics`)
         .then(response => response.text())
         .then(data => {
             const jcalData = ICAL.parse(data);
@@ -249,11 +251,17 @@ function updateDisplay() {
     const mondayDate = getDayOfWeek(weekNumber, year, 1);
     const month = getMonthOfWeek(weekNumber, year);
     monday.textContent = `${mondayDate}/${month}`;
-    tuesday.textContent = `${mondayDate + 1}/${month}`;
-    wednesday.textContent = `${mondayDate + 2}/${month}`;
-    thursday.textContent = `${mondayDate + 3}/${month}`;
-    friday.textContent = `${mondayDate + 4}/${month}`;
+    tuesday.textContent = `${adjustDay(mondayDate + 1, month)}/${month}`;
+    wednesday.textContent = `${adjustDay(mondayDate + 2, month)}/${month}`;
+    thursday.textContent = `${adjustDay(mondayDate + 3, month)}/${month}`;
+    friday.textContent = `${adjustDay(mondayDate + 4, month)}/${month}`;
     edtLoad();
+}
+
+function adjustDay(day, month) {
+    // Vérifier si le jour dépasse le nombre de jours dans le mois
+    const lastDayOfMonth = new Date(year, month, 0).getDate();
+    return day > lastDayOfMonth ? day - lastDayOfMonth : day;
 }
 
 nextWeek.addEventListener('click', () => {
