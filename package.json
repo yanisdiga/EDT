@@ -5,8 +5,8 @@
   "scripts": {
     "start": "concurrently \"node proxy.js\" \"node bin/www\""
   },
-  
   "dependencies": {
+    "cors": "^2.8.5",
     "cors-anywhere": "^0.4.4",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
@@ -14,7 +14,8 @@
     "http-errors": "~1.6.3",
     "ical.js": "^1.5.0",
     "morgan": "~1.9.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "request": "^2.88.2"
   },
   "description": "edt for univ evry",
   "main": "server.js",

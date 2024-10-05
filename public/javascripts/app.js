@@ -17,34 +17,32 @@ dropdownGroup.addEventListener('click', () => {
         }
     });
 });
-
+let group = '';
+let edtURL = `https://edt-univ-evry.hyperplanning.fr/hp/Telechargements/ical/Edt_L3_Informatique___CILS.ics?version=2024.0.8.0&icalsecurise=93006A33D29EA91DA5D60BC1D0D98324B89B126ED51536D424B2DD7BB56FA80EBC49F5B064D36C76B6B7247CEE95B6ED&param=643d5b312e2e36325d2666683d3126663d3131303030`;
 const groupButton = document.querySelectorAll('.group');
 const choosedGroup = document.getElementById('choosed-group');
-let group = '';
 groupButton.forEach((button) => {
     button.addEventListener('click', () => {
         choosedGroup.textContent = button.textContent;
         group = button.id;
+
+        // Déplacer edtURL ici pour inclure le groupe mis à jour
+        edtURL = `https://edt-univ-evry.hyperplanning.fr/hp/Telechargements/ical/Edt_L3_Informatique___${group}.ics?version=2024.0.8.0&icalsecurise=93006A33D29EA91DA5D60BC1D0D98324B89B126ED51536D424B2DD7BB56FA80EBC49F5B064D36C76B6B7247CEE95B6ED&param=643d5b312e2e36325d2666683d3126663d3131303030`;
+
+        console.log(button.id);
+        console.log(edtURL);
+        
         dropdownContent.style.display = 'none';
         dropdown.style.backgroundColor = 'transparent';
         edtLoad();
+
         // Enregistrer le groupe sélectionné dans le localStorage
         localStorage.setItem('selectedGroup', group);
     });
 });
-//Utilisation de proxy pour bypass le CORS
-const prefix = "http://localhost:8080/";
 
-const edtURL = `https://edt-api.obstinate.fr/${group}` /*`${prefix}https://edt.univ-evry.fr/icsetudiant/${group}_etudiant(e).ics`*/
 const jsonURL = './name/L2INFO.json';
-
-async function fetchData(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`Erreur lors de la requête : ${response.status}`);
-    }
-    return response.text();
-}
+const rapidApiProxyUrl = 'https://http-cors-proxy.p.rapidapi.com/';
 
 async function fetchJson(url) {
     const response = await fetch(url);
@@ -62,9 +60,26 @@ function removeLessons() {
 }
 
 async function edtLoad() {
+    // Utilisation de RapidApi HTTP Cors Proxy : https://rapidapi.com/pgarciamaurino/api/http-cors-proxy
+    const url = rapidApiProxyUrl;
+    const options = {
+        method: 'POST',
+        headers: {
+            'x-rapidapi-key': '0ed569f79cmsha3270f7667b59b9p15b733jsnc48011143b2f',
+            'x-rapidapi-host': 'http-cors-proxy.p.rapidapi.com',
+            'Content-Type': 'application/json',
+            Origin: 'www.example.com',
+            'X-Requested-With': 'www.example.com'
+        },
+        body: JSON.stringify({
+            url: edtURL
+        })
+    };
+
     try {
-        // Charger les données depuis le fichier ICS
-        const data = await fetchData(`https://edt-api.obstinate.fr/${group}`);
+        // Charger les données depuis le fichier ICS via l'API RapidAPI
+        const response = await fetch(url, options);
+        const data = await response.text();
         // Analyser les données ICS
         const jcalData = ICAL.parse(data);
         const comp = new ICAL.Component(jcalData);
@@ -116,7 +131,7 @@ async function edtLoad() {
             const week = dateStart.getWeekNumber();
             const location = vevent.getFirstPropertyValue('location');
             const description = vevent.getFirstPropertyValue('description');
-            const teacher = description.split("\n")[1];
+            const teacher = "Prof : "+summary.split(" - ")[3];
 
             const displayContainer = document.querySelector('.display');
             const lessonContainer = document.createElement('div');
@@ -131,9 +146,12 @@ async function edtLoad() {
             lessonRoom.classList.add('lesson-room');
 
             let name = '';
+            const parts = summary.split(" - ");
             const lessonNameJson = nameData.code;
-            const lessonName = summary.split(" ")[0];
-            lessonNameJson.forEach((lesson) => {
+            const lessonName1 = parts[1].trim();
+            const lessonName = lessonName1.split(",")[0].trim();
+            console.log(lessonName);
+            /*lessonNameJson.forEach((lesson) => {
                 if (lesson[lessonName] != undefined) {
                     if (lesson[lessonName] == "ALGEBRE ET ARTITHMETIQUE 1") {
                         if (location !== "1CY-1-A102") {
@@ -144,9 +162,9 @@ async function edtLoad() {
                         name = lesson[lessonName];
                     }
                 }
-            });
+            });*/
             if (name == '') {
-                name = summary;
+                name = lessonName;
             }
             if (name == ' - indéfini') {
                 name = "JVE-TVE";
@@ -175,21 +193,21 @@ async function edtLoad() {
                         lessonContainer.style.gridColumn = 6;
                     }
                     displayContainer.appendChild(lessonContainer);
-                    lessonType.innerHTML = summary.split(" ")[2] + ' - ' + '<span>' + timePartStart + ' - ' + timePartEnd + '</span>';
-                    if (summary.split(" ")[2] == 'TD') {
+                    lessonType.innerHTML = summary.split(" ")[0] + ' - ' + '<span>' + timePartStart + ' - ' + timePartEnd + '</span>';
+                    if (summary.split(" ")[0] == 'TD') {
                         lessonContainer.style.backgroundColor = '#9B7E00';
                     }
-                    if (summary.split(" ")[2] == 'TP') {
+                    if (summary.split(" ")[0] == 'TP') {
                         lessonContainer.style.backgroundColor = '#00FF00';
                     }
-                    if (summary.split(" ")[2] == 'CM') {
+                    if (summary.split(" ")[0] == 'CM') {
                         lessonContainer.style.backgroundColor = '#0022A2';
                     }
-                    if (summary.split(" ")[2] == 'DS' || summary.split(" ")[2] == 'Examen') {
+                    if (summary.split(" ")[0] == 'DS' || summary.split(" ")[2] == 'Examen') {
                         lessonContainer.style.backgroundColor = '#A20000';
                     }
                     lessonTeacher.textContent = teacher;
-                    lessonRoom.textContent = "Salle: " + location;
+                    lessonRoom.textContent = "Salle : " + location;
                     lessonTitle.textContent = name;
 
                     lessonContainer.appendChild(lessonType);
@@ -366,8 +384,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     else {
-        group = 'l2infog1';
-        choosedGroup.textContent = 'L2 - G1';
+        group = 'CILS';
+        choosedGroup.textContent = 'L3 - CILS';
     }
     updateWeekDisplay();
     updateDisplay();
