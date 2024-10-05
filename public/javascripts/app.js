@@ -41,7 +41,6 @@ groupButton.forEach((button) => {
     });
 });
 
-const jsonURL = './name/L2INFO.json';
 const rapidApiProxyUrl = 'https://http-cors-proxy.p.rapidapi.com/';
 
 async function fetchJson(url) {
@@ -87,9 +86,6 @@ async function edtLoad() {
 
         // Supprimer les cours précédents
         removeLessons();
-
-        // Charger les données JSON pour le nom des cours
-        const nameData = await fetchJson(jsonURL);
 
         vevents.forEach((vevent) => {
             const summary = vevent.getFirstPropertyValue('summary');
@@ -147,22 +143,9 @@ async function edtLoad() {
 
             let name = '';
             const parts = summary.split(" - ");
-            const lessonNameJson = nameData.code;
             const lessonName1 = parts[1].trim();
             const lessonName = lessonName1.split(",")[0].trim();
             console.log(lessonName);
-            /*lessonNameJson.forEach((lesson) => {
-                if (lesson[lessonName] != undefined) {
-                    if (lesson[lessonName] == "ALGEBRE ET ARTITHMETIQUE 1") {
-                        if (location !== "1CY-1-A102") {
-                            name = "THEORIE DES LANGAGES";
-                        }
-                    }
-                    else {
-                        name = lesson[lessonName];
-                    }
-                }
-            });*/
             if (name == '') {
                 name = lessonName;
             }
@@ -203,7 +186,7 @@ async function edtLoad() {
                     if (summary.split(" ")[0] == 'CM') {
                         lessonContainer.style.backgroundColor = '#0022A2';
                     }
-                    if (summary.split(" ")[0] == 'DS' || summary.split(" ")[2] == 'Examen') {
+                    if (summary.split(" ")[0] == 'DS' || summary.split(" ")[0] == 'EXAMEN') {
                         lessonContainer.style.backgroundColor = '#A20000';
                     }
                     lessonTeacher.textContent = teacher;
@@ -367,7 +350,7 @@ function createBackgroundLines() {
             line.classList.add('lunch')
         }
         if (i % 2 == 0 && i != 10) {
-            line.style.height = '2px';
+            line.style.height = '2px';ex
         }
     }
 }
