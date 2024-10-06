@@ -1,6 +1,39 @@
 const dropdownGroup = document.getElementById('dropdown-group');
 const dropdownContent = document.querySelector('.dropdown-content');
 const dropdown = document.querySelector('.dropdown');
+const groupButton = document.querySelectorAll('.group');
+const choosedGroup = document.getElementById('choosed-group');
+const displayContainer = document.querySelector('.display');
+const hours = document.querySelectorAll('.hour');
+
+const nextWeek = document.getElementById('next-week');
+const previousWeek = document.getElementById('previous-week');
+const startWeek = document.getElementById('start-week');
+const endWeek = document.getElementById('end-week');
+const currentdate = new Date();
+let oneJan = new Date(currentdate.getFullYear(), 0, 1);
+let numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
+let weekNumber = Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
+const yearNumber = currentdate.getFullYear();
+
+const btnFirstWeek = document.getElementById('first-week');
+const btnSecondWeek = document.getElementById('second-week');
+const btnThirdWeek = document.getElementById('third-week');
+
+const monday = document.getElementById('monday');
+const tuesday = document.getElementById('tuesday');
+const wednesday = document.getElementById('wednesday');
+const thursday = document.getElementById('thursday');
+const friday = document.getElementById('friday');
+const year = currentdate.getFullYear();
+
+const lessonTitles = document.querySelectorAll('.lesson-title');
+
+let group = '';
+let edtURL = `https://edt-univ-evry.hyperplanning.fr/hp/Telechargements/ical/Edt_L3_Informatique___CILS.ics?version=2024.0.8.0&icalsecurise=93006A33D29EA91DA5D60BC1D0D98324B89B126ED51536D424B2DD7BB56FA80EBC49F5B064D36C76B6B7247CEE95B6ED&param=643d5b312e2e36325d2666683d3126663d3131303030`;
+
+const rapidApiProxyUrl = 'https://http-cors-proxy.p.rapidapi.com/';
+
 dropdownGroup.addEventListener('click', () => {
     if (dropdownContent.style.display === 'flex') {
         dropdownContent.style.display = 'none';
@@ -17,10 +50,7 @@ dropdownGroup.addEventListener('click', () => {
         }
     });
 });
-let group = '';
-let edtURL = `https://edt-univ-evry.hyperplanning.fr/hp/Telechargements/ical/Edt_L3_Informatique___CILS.ics?version=2024.0.8.0&icalsecurise=93006A33D29EA91DA5D60BC1D0D98324B89B126ED51536D424B2DD7BB56FA80EBC49F5B064D36C76B6B7247CEE95B6ED&param=643d5b312e2e36325d2666683d3126663d3131303030`;
-const groupButton = document.querySelectorAll('.group');
-const choosedGroup = document.getElementById('choosed-group');
+
 groupButton.forEach((button) => {
     button.addEventListener('click', () => {
         choosedGroup.textContent = button.textContent;
@@ -41,8 +71,6 @@ groupButton.forEach((button) => {
     });
 });
 
-const rapidApiProxyUrl = 'https://http-cors-proxy.p.rapidapi.com/';
-
 async function fetchJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -59,8 +87,6 @@ function removeLessons() {
 }
 
 async function edtLoad() {
-    // Utilisation de RapidApi HTTP Cors Proxy : https://rapidapi.com/pgarciamaurino/api/http-cors-proxy
-    const url = rapidApiProxyUrl;
     const options = {
         method: 'POST',
         headers: {
@@ -70,163 +96,93 @@ async function edtLoad() {
             Origin: 'www.example.com',
             'X-Requested-With': 'www.example.com'
         },
-        body: JSON.stringify({
-            url: edtURL
-        })
+        body: JSON.stringify({ url: edtURL })
     };
 
     try {
-        // Charger les données depuis le fichier ICS via l'API RapidAPI
-        const response = await fetch(url, options);
+        const response = await fetch(rapidApiProxyUrl, options);
         const data = await response.text();
-        // Analyser les données ICS
-        const jcalData = ICAL.parse(data);
-        const comp = new ICAL.Component(jcalData);
-        const vevents = comp.getAllSubcomponents('vevent');
+        const vevents = new ICAL.Component(ICAL.parse(data)).getAllSubcomponents('vevent');
 
-        // Supprimer les cours précédents
+        // Supprimer les leçons précédentes
         removeLessons();
 
         vevents.forEach((vevent) => {
             const summary = vevent.getFirstPropertyValue('summary');
-            const dtstart = vevent.getFirstPropertyValue('dtstart');
-            const dtend = vevent.getFirstPropertyValue('dtend');
-            const dateStart = new Date(dtstart);
-            const dateEnd = new Date(dtend);
-            // Ajouter le décalage horaire UTC+1 (CET)
-            if (weekNumber >= 44 || weekNumber <= 13) {
-                dateStart.setHours(dateStart.getHours() + 1);
-                dateEnd.setHours(dateEnd.getHours() + 1);
-            }
-            else {
-                dateStart.setHours(dateStart.getHours() + 2);
-                dateEnd.setHours(dateEnd.getHours() + 2);
-            }
-            // Obtenir la date au format "YYYY-MM-DD"
-            const datePart = dateStart.toISOString().split("T")[0];
+            const [dateStart, dateEnd] = ['dtstart', 'dtend'].map(prop => new Date(vevent.getFirstPropertyValue(prop)));
+            const offset = (weekNumber >= 44 || weekNumber <= 13) ? 1 : 2;
+            [dateStart, dateEnd].forEach(date => date.setHours(date.getHours() + offset));
+
             const dayOfWeek = dateStart.toLocaleDateString("fr-FR", { weekday: "long" });
-            // Obtenir l'heure (heures et minutes) au format "HH:mm"
-            const timePartStart = dateStart.toISOString().split("T")[1].substring(0, 5);
-            const timePartEnd = dateEnd.toISOString().split("T")[1].substring(0, 5);
+            const [timePartStart, timePartEnd] = [dateStart, dateEnd].map(date => date.toISOString().split("T")[1].substring(0, 5));
+            const duration = Math.ceil((dateEnd - dateStart) / (1000 * 60 * 60)) * 3; // Durée en heures (1 heure = 3 unités dans la grille)
+            const location = (vevent.getFirstPropertyValue('location') || "").split(" - ")[0].trim() || "Inconnu";
+            const teacher = "Prof : " + summary.split(" - ")[3] || "Inconnu";
+            const lessonName = summary.split(" - ")[1]?.split(",")[0].trim() || "Inconnu";
 
-            const timeDifference = dateEnd.getTime() - dateStart.getTime();
-            const hour = Math.floor(timeDifference / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-            let timePartDuration = (hour + 1) * 3;
-
-            const year = dateStart.getFullYear();
-            const month = dateStart.getMonth() + 1;
-            Date.prototype.getWeekNumber = function () {
-                const currentDate = new Date(this);
-                currentDate.setHours(0, 0, 0, 0);
-                currentDate.setDate(currentDate.getDate() + 4 - (currentDate.getDay() || 7));
-                const yearStart = new Date(currentDate.getFullYear(), 0, 1);
-                const weekNumber = Math.ceil(((currentDate - yearStart) / 86400000 + 1) / 7);
-                return weekNumber;
-            };
-            const week = dateStart.getWeekNumber();
-            const maxLocation = vevent.getFirstPropertyValue('location');
-            let location = ''; // Déclare une variable vide au cas où maxLocation est null
-            if (maxLocation) {
-                location = maxLocation.split(" - ")[0].trim();
-            } else {
-                console.log("Location is null or undefined for this event."); // Log si la location est absente
-            }
-
-            const description = vevent.getFirstPropertyValue('description');
-            const teacher = "Prof : " + summary.split(" - ")[3];
-
-            const displayContainer = document.querySelector('.display');
-            const lessonContainer = document.createElement('div');
-            lessonContainer.classList.add('lesson');
-            const lessonType = document.createElement('div');
-            lessonType.classList.add('lesson-type');
-            const lessonTitle = document.createElement('div');
-            lessonTitle.classList.add('lesson-title');
-            const lessonTeacher = document.createElement('div');
-            lessonTeacher.classList.add('lesson-teacher');
-            const lessonRoom = document.createElement('div');
-            lessonRoom.classList.add('lesson-room');
-
-            let name = '';
-            const parts = summary.split(" - ");
-            const lessonName1 = parts[1].trim();
-            const lessonName = lessonName1.split(",")[0].trim();
-            console.log(lessonName);
-            if (name == '') {
-                name = lessonName;
-            }
-            if (name == ' - indéfini') {
-                name = "JVE-TVE";
-            }
-
-            const hours = document.querySelectorAll('.hour');
             hours.forEach((hour) => {
-                const timeStart = parseInt(timePartStart.substring(0, 2), 10) + "h" + timePartStart.substring(3, 5);
-                if (week == weekNumber && year == yearNumber && (hour.id == timeStart)) {
-                    lessonContainer.style.gridRowStart = parseInt(hour.dataset.row);
-                    lessonContainer.style.gridRowEnd = parseInt(hour.dataset.row) + timePartDuration;
-                    //lessonContainer.style.gridRowEnd = parseInt(hour.dataset.row) + 3;
-                    if (dayOfWeek == 'lundi') {
-                        lessonContainer.style.gridColumn = 2;
-                    }
-                    if (dayOfWeek == 'mardi') {
-                        lessonContainer.style.gridColumn = 3;
-                    }
-                    if (dayOfWeek == 'mercredi') {
-                        lessonContainer.style.gridColumn = 4;
-                    }
-                    if (dayOfWeek == 'jeudi') {
-                        lessonContainer.style.gridColumn = 5;
-                    }
-                    if (dayOfWeek == 'vendredi') {
-                        lessonContainer.style.gridColumn = 6;
-                    }
+                const timeStart = `${parseInt(timePartStart.split(":")[0])}h${timePartStart.split(":")[1]}`;
+                if (weekNumber === Math.ceil((dateStart.getDay() + 1 + Math.floor((dateStart - oneJan) / (24 * 60 * 60 * 1000))) / 7) && yearNumber === dateStart.getFullYear() && hour.id === timeStart) {
+                    const lessonContainer = createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour);
+                    setLessonColor(lessonContainer, summary)
                     displayContainer.appendChild(lessonContainer);
-                    lessonType.innerHTML = summary.split(" ")[0] + ' - ' + '<span>' + timePartStart + ' - ' + timePartEnd + '</span>';
-                    if (summary.split(" ")[0] == 'TD') {
-                        lessonContainer.style.backgroundColor = '#9B7E00';
-                    }
-                    if (summary.split(" ")[0] == 'TP') {
-                        lessonContainer.style.backgroundColor = '#00FF00';
-                    }
-                    if (summary.split(" ")[0] == 'CM') {
-                        lessonContainer.style.backgroundColor = '#0022A2';
-                    }
-                    if (summary.split(" ")[0] == 'DS' || summary.split(" ")[0] == 'EXAMEN') {
-                        lessonContainer.style.backgroundColor = '#A20000';
-                    }
-                    lessonTeacher.textContent = teacher;
-                    lessonRoom.textContent = "Salle : " + location;
-                    lessonTitle.textContent = name;
-
-                    lessonContainer.appendChild(lessonType);
-                    lessonContainer.appendChild(lessonTitle);
-                    lessonContainer.appendChild(lessonTeacher);
-                    lessonContainer.appendChild(lessonRoom);
                 }
             });
         });
-    }
-    catch (error) {
-        console.log(error);
+    } catch (error) {
+        console.error(error);
     }
 }
 
+function createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour) {
+    const lessonContainer = document.createElement('div');
+    lessonContainer.classList.add('lesson');
 
-const nextWeek = document.getElementById('next-week');
-const previousWeek = document.getElementById('previous-week');
-const startWeek = document.getElementById('start-week');
-const endWeek = document.getElementById('end-week');
-const currentdate = new Date();
-let oneJan = new Date(currentdate.getFullYear(), 0, 1);
-let numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
-let weekNumber = Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
-const yearNumber = currentdate.getFullYear();
+    // Définir la colonne en fonction du jour de la semaine
+    lessonContainer.style.cssText = `grid-column: ${getColumnByDay(dayOfWeek)}; grid-row-start: ${hour.dataset.row}; grid-row-end: ${parseInt(hour.dataset.row) + duration};`;
 
-const btnFirstWeek = document.getElementById('first-week');
-const btnSecondWeek = document.getElementById('second-week');
-const btnThirdWeek = document.getElementById('third-week');
+    // Créer et ajouter les autres éléments
+    const lessonType = document.createElement('div');
+    lessonType.classList.add('lesson-type');
+    lessonType.innerHTML = summary.split(" ")[0] + ' - ' + '<span>' + timePartStart + ' - ' + timePartEnd + '</span>';
+
+    const lessonTitle = document.createElement('div');
+    lessonTitle.classList.add('lesson-title');
+    lessonTitle.textContent = lessonName;
+
+    const lessonTeacher = document.createElement('div');
+    lessonTeacher.classList.add('lesson-teacher');
+    lessonTeacher.textContent = teacher;
+
+    const lessonRoom = document.createElement('div');
+    lessonRoom.classList.add('lesson-room');
+    lessonRoom.textContent = "Salle : " + location;
+
+    lessonContainer.appendChild(lessonType);
+    lessonContainer.appendChild(lessonTitle);
+    lessonContainer.appendChild(lessonTeacher);
+    lessonContainer.appendChild(lessonRoom);
+
+    return lessonContainer;
+}
+
+function getColumnByDay(day) {
+    const days = { 'lundi': 2, 'mardi': 3, 'mercredi': 4, 'jeudi': 5, 'vendredi': 6 };
+    return days[day];
+}
+
+
+function createDiv(className, textContent) {
+    const div = document.createElement('div');
+    div.classList.add(className);
+    div.innerHTML = textContent;
+    return div;
+}
+
+function setLessonColor(container, summary) {
+    const colors = { 'TD': '#9B7E00', 'TP': '#00FF00', 'CM': '#0022A2', 'DS': '#A20000', 'EXAMEN': '#A20000' };
+    container.style.backgroundColor = colors[summary.split(" ")[0]] || '#249b00';
+}
 
 function updateWeekDisplay() {
     const dWeek = document.querySelector('.d-week');
@@ -248,13 +204,6 @@ function updateWeekDisplay() {
         btnThirdWeek.style.display = 'inline-block';
     }
 }
-
-const monday = document.getElementById('monday');
-const tuesday = document.getElementById('tuesday');
-const wednesday = document.getElementById('wednesday');
-const thursday = document.getElementById('thursday');
-const friday = document.getElementById('friday');
-const year = currentdate.getFullYear();
 
 function getDayOfWeek(weekNumber, year, dayInWeek) {
     const firstDayOfYear = new Date(year, 0, 1);
@@ -326,9 +275,6 @@ btnThirdWeek.addEventListener('click', () => {
     updateDisplay();
 });
 
-// Sélectionnez tous les éléments de classe "lesson-title"
-const lessonTitles = document.querySelectorAll('.lesson-title');
-
 // Parcourez chaque élément de classe "lesson-title"
 lessonTitles.forEach((lessonTitle) => {
     // Obtenez la longueur du texte dans le titre de la leçon
@@ -361,7 +307,6 @@ function createBackgroundLines() {
         }
     }
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedGroup = localStorage.getItem('selectedGroup');

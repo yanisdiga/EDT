@@ -25,7 +25,7 @@ app.use('/public/name', express.static(__dirname + '/public/name'));
 
 // Lancer le serveur sur le port 3000
 app.listen(3000, () => {
-    console.log('Serveur en écoute sur le port 3000');
+    console.log(`Serveur en écoute sur le port 3000 : localhost:3000`);
 });
 
 //module.exports = app;
