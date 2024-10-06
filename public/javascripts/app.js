@@ -31,7 +31,7 @@ groupButton.forEach((button) => {
 
         console.log(button.id);
         console.log(edtURL);
-        
+
         dropdownContent.style.display = 'none';
         dropdown.style.backgroundColor = 'transparent';
         edtLoad();
@@ -125,9 +125,16 @@ async function edtLoad() {
                 return weekNumber;
             };
             const week = dateStart.getWeekNumber();
-            const location = vevent.getFirstPropertyValue('location');
+            const maxLocation = vevent.getFirstPropertyValue('location');
+            let location = ''; // Déclare une variable vide au cas où maxLocation est null
+            if (maxLocation) {
+                location = maxLocation.split(" - ")[0].trim();
+            } else {
+                console.log("Location is null or undefined for this event."); // Log si la location est absente
+            }
+
             const description = vevent.getFirstPropertyValue('description');
-            const teacher = "Prof : "+summary.split(" - ")[3];
+            const teacher = "Prof : " + summary.split(" - ")[3];
 
             const displayContainer = document.querySelector('.display');
             const lessonContainer = document.createElement('div');
@@ -350,7 +357,7 @@ function createBackgroundLines() {
             line.classList.add('lunch')
         }
         if (i % 2 == 0 && i != 10) {
-            line.style.height = '2px';ex
+            line.style.height = '2px';
         }
     }
 }
