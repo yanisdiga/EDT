@@ -59,9 +59,6 @@ groupButton.forEach((button) => {
         // Déplacer edtURL ici pour inclure le groupe mis à jour
         edtURL = `https://edt-univ-evry.hyperplanning.fr/hp/Telechargements/ical/Edt_L3_Informatique___${group}.ics?version=2024.0.8.0&icalsecurise=93006A33D29EA91DA5D60BC1D0D98324B89B126ED51536D424B2DD7BB56FA80EBC49F5B064D36C76B6B7247CEE95B6ED&param=643d5b312e2e36325d2666683d3126663d3131303030`;
 
-        console.log(button.id);
-        console.log(edtURL);
-
         dropdownContent.style.display = 'none';
         dropdown.style.backgroundColor = 'transparent';
         edtLoad();
@@ -103,35 +100,47 @@ async function edtLoad() {
         const response = await fetch(rapidApiProxyUrl, options);
         const data = await response.text();
         const vevents = new ICAL.Component(ICAL.parse(data)).getAllSubcomponents('vevent');
-
+    
         // Supprimer les leçons précédentes
         removeLessons();
-
+    
+        // Calculer les dates de début et de fin de la semaine
+        const startOfWeek = new Date(oneJan);
+        startOfWeek.setDate(oneJan.getDate() + (weekNumber - 1) * 7);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+    
         vevents.forEach((vevent) => {
-            const summary = vevent.getFirstPropertyValue('summary');
-            const [dateStart, dateEnd] = ['dtstart', 'dtend'].map(prop => new Date(vevent.getFirstPropertyValue(prop)));
-            const offset = (weekNumber >= 44 || weekNumber <= 13) ? 1 : 2;
-            [dateStart, dateEnd].forEach(date => date.setHours(date.getHours() + offset));
-
-            const dayOfWeek = dateStart.toLocaleDateString("fr-FR", { weekday: "long" });
-            const [timePartStart, timePartEnd] = [dateStart, dateEnd].map(date => date.toISOString().split("T")[1].substring(0, 5));
-            const duration = Math.ceil((dateEnd - dateStart) / (1000 * 60 * 60)) * 3; // Durée en heures (1 heure = 3 unités dans la grille)
-            const location = (vevent.getFirstPropertyValue('location') || "").split(" - ")[0].trim() || "Inconnu";
-            const teacher = "Prof : " + summary.split(" - ")[3] || "Inconnu";
-            const lessonName = summary.split(" - ")[1]?.split(",")[0].trim() || "Inconnu";
-
-            hours.forEach((hour) => {
-                const timeStart = `${parseInt(timePartStart.split(":")[0])}h${timePartStart.split(":")[1]}`;
-                if (weekNumber === Math.ceil((dateStart.getDay() + 1 + Math.floor((dateStart - oneJan) / (24 * 60 * 60 * 1000))) / 7) && yearNumber === dateStart.getFullYear() && hour.id === timeStart) {
-                    const lessonContainer = createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour);
-                    setLessonColor(lessonContainer, summary)
-                    displayContainer.appendChild(lessonContainer);
-                }
-            });
+            const dateStart = new Date(vevent.getFirstPropertyValue('dtstart'));
+            const dateEnd = new Date(vevent.getFirstPropertyValue('dtend'));
+    
+            // Vérifier si l'événement est dans la semaine sélectionnée
+            if (dateStart >= startOfWeek && dateEnd <= endOfWeek) {
+                const summary = vevent.getFirstPropertyValue('summary');
+                const offset = (weekNumber >= 44 || weekNumber <= 13) ? 1 : 2;
+                [dateStart, dateEnd].forEach(date => date.setHours(date.getHours() + offset));
+    
+                const dayOfWeek = dateStart.toLocaleDateString("fr-FR", { weekday: "long" });
+                const [timePartStart, timePartEnd] = [dateStart, dateEnd].map(date => date.toISOString().split("T")[1].substring(0, 5));
+                const duration = Math.ceil((dateEnd - dateStart) / (1000 * 60 * 60)) * 3;
+                const location = (vevent.getFirstPropertyValue('location') || "").split(" - ")[0].trim() || "Inconnu";
+                const teacher = "Prof : " + summary.split(" - ")[3] || "Inconnu";
+                const lessonName = summary.split(" - ")[1]?.split(",")[0].trim() || "Inconnu";
+    
+                hours.forEach((hour) => {
+                    const timeStart = `${parseInt(timePartStart.split(":")[0])}h${timePartStart.split(":")[1]}`;
+                    if (hour.id === timeStart) {
+                        const lessonContainer = createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour);
+                        setLessonColor(lessonContainer, summary)
+                        displayContainer.appendChild(lessonContainer);
+                    }
+                });
+            }
         });
     } catch (error) {
         console.error(error);
     }
+    
 }
 
 function createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour) {
