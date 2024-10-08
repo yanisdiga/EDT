@@ -232,7 +232,9 @@ export function highlightVacations() {
 
     // Vérifiez s'il existe déjà un conteneur de vacances
     const existingVacationContainer = displayContainer.querySelector('.vacation-container');
+    const existingEmptyContainers = displayContainer.querySelector('.empty-day-container');
     if (existingVacationContainer) existingVacationContainer.remove();
+    if(existingEmptyContainers) existingEmptyContainers.remove();
     if (!hasLessons) {
         const vacationContainer = document.createElement('div');
         vacationContainer.classList.add('vacation-container');
