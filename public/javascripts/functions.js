@@ -1,6 +1,6 @@
 import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles, lessonsContainer } from './domElements.js';
 //import { setLessonColor, createLessonContainer, getColumnByDay } from './utils.js';
-import  { oneJan, weekNumber, year, edtURL, hajarColor } from './utils.js'
+import  { oneJan, weekNumber, year, edtURL, hajarColor, setWeekNumber } from './utils.js'
 
 export function removeLessons() {
     const lessons = document.querySelectorAll('.lesson');
@@ -123,16 +123,22 @@ export function setLessonColor(container, summary) {
 
 export function updateWeekDisplay() {
     const dWeek = document.querySelector('.d-week');
-    let firstWeek = weekNumber - 1 - 35; // -35 pour commencer 1ere semaine (septembre) a 1
-    let secondWeek = weekNumber - 35;
-    let thirdWeek = weekNumber + 1 -35;
+    const totalWeeks = 52; // You can adjust this if you have more weeks
+    let firstWeek = (weekNumber - 1 - 35 + totalWeeks) % totalWeeks || totalWeeks; // Garder entre 0 et 52
+    let secondWeek = (weekNumber - 35 + totalWeeks) % totalWeeks || totalWeeks;
+    let thirdWeek = (weekNumber + 1 - 35 + totalWeeks) % totalWeeks || totalWeeks;
+
+    // Ensure that the values are within the correct range
+    firstWeek = firstWeek === 0 ? totalWeeks : firstWeek;
+    secondWeek = secondWeek === 0 ? totalWeeks : secondWeek;
+    thirdWeek = thirdWeek === 0 ? totalWeeks : thirdWeek;
 
     // Réinitialiser le numéro de semaine si nécessaire
     if (weekNumber > 52) {
-        weekNumber = 1; // Réinitialiser à 1 si > 52
+        setWeekNumber(1); // Réinitialiser à 1 si > 52
     }
     if (weekNumber < 1) {
-        weekNumber = 52; // Assurer que le numéro de semaine ne soit jamais < 1
+        setWeekNumber(1);; // Assurer que le numéro de semaine ne soit jamais < 1
     }
 
     // Ajuster les numéros de semaine adjacents
