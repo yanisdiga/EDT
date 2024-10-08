@@ -18,3 +18,5 @@ export const wednesday = document.getElementById('wednesday');
 export const thursday = document.getElementById('thursday');
 export const friday = document.getElementById('friday');
 export const lessonTitles = document.querySelectorAll('.lesson-title');
+export const hajarBtn = document.querySelector('.hajarBtn')
+export const lessonsContainer = document.querySelectorAll('.lesson')

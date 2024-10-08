@@ -1,9 +1,10 @@
 import {
     dropdownGroup, dropdownContent, dropdown, groupButton, choosedGroup, nextWeek,
-    previousWeek, startWeek, endWeek, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles
+    previousWeek, startWeek, endWeek, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles,
+    hajarBtn
 } from './domElements.js';
-import { edtLoad, updateWeekDisplay, updateDisplay } from './functions.js';
-import  { setWeekNumber, weekNumber, setGroup, setEdtUrl, group} from './utils.js'
+import { edtLoad, updateWeekDisplay, updateDisplay, setLessonColor } from './functions.js';
+import  { setWeekNumber, weekNumber, setGroup, setEdtUrl, group, setHajarColor, hajarColor} from './utils.js'
 
 dropdownGroup.addEventListener('click', () => {
     if (dropdownContent.style.display === 'flex') {
@@ -73,4 +74,9 @@ btnThirdWeek.addEventListener('click', () => {
     setWeekNumber(weekNumber + 1);
     updateWeekDisplay();
     updateDisplay();
+});
+
+hajarBtn.addEventListener('click', () => {
+    setHajarColor(!hajarColor); // Switch entre true et false a chaque clique
+    setLessonColor();
 });
