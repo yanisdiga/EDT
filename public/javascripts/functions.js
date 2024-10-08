@@ -225,7 +225,7 @@ export function lessonTitleSize() {
 }
 function EmptyColor(bool) {
     if (bool) return 'rgba(217, 136, 128, 0.3)'
-    else return 'rgba(255, 0, 0, 0.3)'
+    else return 'rgba(204, 102, 102, 0.3)'
 }
 export function highlightVacations() {
     const hasLessons = displayContainer.querySelector('.lesson');
