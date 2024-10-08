@@ -328,6 +328,13 @@ body {
     font-size: 12px;
     margin-left: auto;
   }
+  .top .changeColor {
+    position: relative;
+    z-index: 1;
+    width: 30%;
+    height: 50%;
+    right: 0;
+  }
 }
 
 .vacation-container, .empty-day-container {
