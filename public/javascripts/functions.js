@@ -286,3 +286,7 @@ export function highlightEmptyDays() {
         displayContainer.append(...emptyDayContainers);
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    edtLoad();
+});
