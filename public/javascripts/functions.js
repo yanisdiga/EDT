@@ -114,9 +114,9 @@ export function setLessonColor(container, summary) {
     let colors = { 'TD': '#9B7E00', 'TP': '#00FF00', 'CM': '#0022A2', 'DS': '#A20000', 'EXAMEN': '#A20000' };
     container.style.color = '#ffffff';
     if(hajarColor){
-        colors = { 'TD': '#ffc6b3', 'TP': '#00FF00', 'CM': '#a6a6a6', 'DS': '#b666d2', 'EXAMEN': '#b666d2' };
+        colors = { 'TD': '#ffc6b3', 'TP': '#00FF00', 'CM': '#e5e7e9', 'DS': '#d2b4de', 'EXAMEN': '#d2b4de' };
         container.style.color = '#333333';
-        defaultColor = '#d2b48c';
+        defaultColor = '#FEF5E7';
     }
     container.style.backgroundColor = colors[summary.split(" ")[0]] || defaultColor;
 }
