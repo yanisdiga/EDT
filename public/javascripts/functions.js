@@ -1,6 +1,6 @@
-import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles } from './domElements.js';
+import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles, lessonsContainer } from './domElements.js';
 //import { setLessonColor, createLessonContainer, getColumnByDay } from './utils.js';
-import  { oneJan, weekNumber, year, edtURL, rapidApiProxyUrl } from './utils.js'
+import  { oneJan, weekNumber, year, edtURL, hajarColor } from './utils.js'
 
 export function removeLessons() {
     const lessons = document.querySelectorAll('.lesson');
@@ -9,21 +9,10 @@ export function removeLessons() {
     });
 }
 
+const url = 'https://corsproxy.io/?' + encodeURIComponent(edtURL);
 export async function edtLoad() {
-    const options = {
-        method: 'POST',
-        headers: {
-            'x-rapidapi-key': '0ed569f79cmsha3270f7667b59b9p15b733jsnc48011143b2f',
-            'x-rapidapi-host': 'http-cors-proxy.p.rapidapi.com',
-            'Content-Type': 'application/json',
-            Origin: 'www.example.com',
-            'X-Requested-With': 'www.example.com'
-        },
-        body: JSON.stringify({ url: edtURL })
-    };
-
     try {
-        const response = await fetch(rapidApiProxyUrl, options);
+        const response = await fetch(url);
         const data = await response.text();
         const vevents = new ICAL.Component(ICAL.parse(data)).getAllSubcomponents('vevent');
 
@@ -121,8 +110,15 @@ export function createDiv(className, textContent) {
 }
 
 export function setLessonColor(container, summary) {
-    const colors = { 'TD': '#9B7E00', 'TP': '#00FF00', 'CM': '#0022A2', 'DS': '#A20000', 'EXAMEN': '#A20000' };
-    container.style.backgroundColor = colors[summary.split(" ")[0]] || '#249b00';
+    let defaultColor = '#249b00'
+    let colors = { 'TD': '#9B7E00', 'TP': '#00FF00', 'CM': '#0022A2', 'DS': '#A20000', 'EXAMEN': '#A20000' };
+    container.style.color = '#ffffff';
+    if(hajarColor){
+        colors = { 'TD': '#ffc6b3', 'TP': '#00FF00', 'CM': '#a6a6a6', 'DS': '#b666d2', 'EXAMEN': '#b666d2' };
+        container.style.color = '#333333';
+        defaultColor = '#d2b48c';
+    }
+    container.style.backgroundColor = colors[summary.split(" ")[0]] || defaultColor;
 }
 
 export function updateWeekDisplay() {
@@ -168,7 +164,7 @@ export function getMonthOfWeek(weekNumber, year) {
     return targetDate.getMonth() + 1;
 }
 
-
+let edtLoadCalled = false; // Variable de contrôle pour edtLoad
 export function updateDisplay() {
     const mondayDate = getDayOfWeek(weekNumber, year, 1);
     const month = getMonthOfWeek(weekNumber, year);
