@@ -110,8 +110,10 @@ export function createDiv(className, textContent) {
 }
 
 export function setLessonColor(container, summary) {
-    let defaultColor = '#249b00'
-    let colors = { 'TD': '#9B7E00', 'TP': '#00FF00', 'CM': '#0022A2', 'DS': '#A20000', 'EXAMEN': '#A20000' };
+    let defaultColor = '#6666cc'; // Darker shade of the original color
+    let colors = {
+        'TD': '#66cc66', 'TP': '#66cc66', 'CM': '#66a3cc', 'DS': '#cc6666', 'EXAMEN': '#cc6666' };
+
     if (container) container.style.color = '#ffffff';
     if (hajarColor) {
         colors = { 'TD': '#ffc6b3', 'TP': '#00FF00', 'CM': '#e5e7e9', 'DS': '#d2b4de', 'EXAMEN': '#d2b4de' };
