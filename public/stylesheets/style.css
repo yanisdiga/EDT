@@ -338,11 +338,6 @@ body {
 }
 
 .vacation-container, .empty-day-container {
-  background-image: repeating-linear-gradient(45deg,
-      rgba(255, 0, 0, 0.3),
-      rgba(255, 0, 0, 0.3) 10px,
-      transparent 10px,
-      transparent 20px);
   background-size: cover;
   height: 100%;
   grid-row: 2 / 51;

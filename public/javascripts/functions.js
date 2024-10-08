@@ -1,6 +1,6 @@
 import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles, lessonsContainer } from './domElements.js';
 //import { setLessonColor, createLessonContainer, getColumnByDay } from './utils.js';
-import  { oneJan, weekNumber, year, edtURL, hajarColor, setWeekNumber } from './utils.js'
+import { oneJan, weekNumber, year, edtURL, hajarColor, setWeekNumber } from './utils.js'
 
 export function removeLessons() {
     const lessons = document.querySelectorAll('.lesson');
@@ -112,13 +112,13 @@ export function createDiv(className, textContent) {
 export function setLessonColor(container, summary) {
     let defaultColor = '#249b00'
     let colors = { 'TD': '#9B7E00', 'TP': '#00FF00', 'CM': '#0022A2', 'DS': '#A20000', 'EXAMEN': '#A20000' };
-    container.style.color = '#ffffff';
-    if(hajarColor){
+    if (container) container.style.color = '#ffffff';
+    if (hajarColor) {
         colors = { 'TD': '#ffc6b3', 'TP': '#00FF00', 'CM': '#e5e7e9', 'DS': '#d2b4de', 'EXAMEN': '#d2b4de' };
-        container.style.color = '#333333';
+        if (container) container.style.color = '#333333';
         defaultColor = '#FEF5E7';
     }
-    container.style.backgroundColor = colors[summary.split(" ")[0]] || defaultColor;
+    if (container) container.style.backgroundColor = colors[summary.split(" ")[0]] || defaultColor;
 }
 
 export function updateWeekDisplay() {
@@ -208,37 +208,43 @@ export function lessonTitleSize() {
     lessonTitles.forEach((lessonTitle) => {
         // Obtenez la longueur du texte dans le titre de la leçon
         const titleTextLength = lessonTitle.textContent.length;
-    
+
         // Définissez une taille de police de base
         let fontSize = '15px';
-    
+
         // Si la longueur du texte dépasse une certaine limite, réduisez la taille de la police
         if (titleTextLength > 9) {
             fontSize = '5px'; // Vous pouvez ajuster la taille ici selon vos besoins
         }
-    
+
         // Appliquez la taille de police calculée au titre de la leçon
         lessonTitle.style.fontSize = fontSize;
     });
 }
-
+function EmptyColor(bool) {
+    if (bool) return 'rgba(217, 136, 128, 0.3)'
+    else return 'rgba(255, 0, 0, 0.3)'
+}
 export function highlightVacations() {
     const hasLessons = displayContainer.querySelector('.lesson');
-    
+
     // Vérifiez s'il existe déjà un conteneur de vacances
     const existingVacationContainer = displayContainer.querySelector('.vacation-container');
-    
+    if (existingVacationContainer) existingVacationContainer.remove();
     if (!hasLessons) {
-        // Si aucun cours n'est présent et le conteneur de vacances n'existe pas, créez-le
-        if (!existingVacationContainer) {
-            const vacationContainer = document.createElement('div');
-            vacationContainer.classList.add('vacation-container');
-            vacationContainer.style.gridColumn = '2 / 7'
-            vacationContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.3)'; // Couleur de fond transparente
-            
-            // Ajouter le conteneur au displayContainer
-            displayContainer.appendChild(vacationContainer);
-        }
+        const vacationContainer = document.createElement('div');
+        vacationContainer.classList.add('vacation-container');
+        vacationContainer.style = `
+            grid-column: 2/7;
+            background-color: ${EmptyColor(hajarColor)};
+            background-image: repeating-linear-gradient(45deg,
+                ${EmptyColor(hajarColor)},
+                ${EmptyColor(hajarColor)} 10px,
+                transparent 10px,
+                transparent 20px);`
+            ;
+        // Ajouter le conteneur au displayContainer
+        displayContainer.appendChild(vacationContainer);
     } else {
         // Si des leçons sont présentes, supprimer le conteneur de vacances s'il existe
         if (existingVacationContainer) {
@@ -267,7 +273,7 @@ export function highlightEmptyDays() {
 
     days.forEach((day, index) => {
         const dayColumn = index + 2; // Colonne correspondante (lundi = 2, mardi = 3, etc.)
-        
+
         // Vérifie si des leçons existent pour le jour correspondant
         const lessonsInColumn = displayContainer.querySelectorAll(`.lesson[data-day="${day}"]`);
 
@@ -275,8 +281,15 @@ export function highlightEmptyDays() {
         if (lessonsInColumn.length === 0) {
             const emptyDayContainer = document.createElement('div');
             emptyDayContainer.classList.add('empty-day-container');
-            emptyDayContainer.style.gridColumn = `${dayColumn}`; // Colonne correspondante au jour
-            emptyDayContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.3)'; // Couleur de fond pour les jours vides
+            emptyDayContainer.style = `
+                grid-column: ${dayColumn};
+                background-color: ${EmptyColor(hajarColor)};
+                background-image: repeating-linear-gradient(45deg,
+                    ${EmptyColor(hajarColor)},
+                    ${EmptyColor(hajarColor)} 10px,
+                    transparent 10px,
+                    transparent 20px);`
+                ;
             emptyDayContainers.push(emptyDayContainer); // Ajoute le conteneur à la liste
         }
     });
