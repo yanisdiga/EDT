@@ -18,20 +18,3 @@ export const wednesday = document.getElementById('wednesday');
 export const thursday = document.getElementById('thursday');
 export const friday = document.getElementById('friday');
 export const lessonTitles = document.querySelectorAll('.lesson-title');
-
-// Parcourez chaque élément de classe "lesson-title"
-lessonTitles.forEach((lessonTitle) => {
-    // Obtenez la longueur du texte dans le titre de la leçon
-    const titleTextLength = lessonTitle.textContent.length;
-
-    // Définissez une taille de police de base
-    let fontSize = '15px';
-
-    // Si la longueur du texte dépasse une certaine limite, réduisez la taille de la police
-    if (titleTextLength > 9) {
-        fontSize = '5px'; // Vous pouvez ajuster la taille ici selon vos besoins
-    }
-
-    // Appliquez la taille de police calculée au titre de la leçon
-    lessonTitle.style.fontSize = fontSize;
-});

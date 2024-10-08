@@ -14,13 +14,16 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px; /* Largeur de la barre de défilement */
+  width: 10px;
+  /* Largeur de la barre de défilement */
 }
 
 /* Style de la poignée de la barre de défilement */
 ::-webkit-scrollbar-thumb {
-  background-color: #888; /* Couleur de la poignée */
-  border-radius: 5px; /* Bordure arrondie de la poignée */
+  background-color: #888;
+  /* Couleur de la poignée */
+  border-radius: 5px;
+  /* Bordure arrondie de la poignée */
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -29,7 +32,8 @@ body {
 
 /* Style de la piste de la barre de défilement */
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Couleur de la piste */
+  background-color: #f1f1f1;
+  /* Couleur de la piste */
 }
 
 
@@ -60,6 +64,7 @@ body {
   justify-content: flex-end;
   align-items: center;
 }
+
 .top .change {
   display: flex;
   flex-direction: row;
@@ -153,7 +158,11 @@ body {
   cursor: default;
 }
 
-.display .monday, .display .tuesday, .display .wednesday, .display .thursday, .display .friday {
+.display .monday,
+.display .tuesday,
+.display .wednesday,
+.display .thursday,
+.display .friday {
   grid-column: 2 / 3;
   grid-row: 1 / 2;
   /*background-color: #000000;*/
@@ -189,8 +198,10 @@ body {
   grid-column: 1/1;
   text-align: center;
   font-size: 10px;
-  background-color: rgba(0, 0, 0, 0.7); /* Adjust background color and opacity as needed */
-  color: white; /* Text color */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Adjust background color and opacity as needed */
+  color: white;
+  /* Text color */
   min-height: 10px;
   margin-bottom: auto;
   margin-top: auto;
@@ -246,6 +257,7 @@ body {
   height: 1px;
   grid-column: 2/-1;
 }
+
 .display .lunch {
   background-color: #181818;
   height: 100%;
@@ -278,26 +290,45 @@ body {
 }
 
 #second-week {
-  background-color: rgb(255,255,255);
+  background-color: rgb(255, 255, 255);
   color: #181818;
 }
 
 @media screen and (max-width: 930px) {
   .lesson-teacher {
-      display: none;
+    display: none;
   }
-  .display .lesson-title{
-      font-size: 11px;
+
+  .display .lesson-title {
+    font-size: 11px;
   }
+
   .display {
-      overflow: scroll;
-      width: 100vw;
+    overflow: scroll;
+    width: 100vw;
   }
-  .display .monday, .display .tuesday, .display .wednesday, .display .thursday, .display .friday {
-      width: 33vw;
+
+  .display .monday,
+  .display .tuesday,
+  .display .wednesday,
+  .display .thursday,
+  .display .friday {
+    width: 33vw;
   }
+
   .choosed-edt h2 {
-      font-size: 12px;
-      margin-left: auto;
+    font-size: 12px;
+    margin-left: auto;
   }
-}    
+}
+
+.vacation-container, .empty-day-container {
+  background-image: repeating-linear-gradient(45deg,
+      rgba(255, 0, 0, 0.3),
+      rgba(255, 0, 0, 0.3) 10px,
+      transparent 10px,
+      transparent 20px);
+  background-size: cover;
+  height: 100%;
+  grid-row: 2 / 51;
+}

@@ -1,4 +1,4 @@
-import { dropdownContent, dropdown, choosedGroup, displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek } from './domElements.js';
+import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles } from './domElements.js';
 //import { setLessonColor, createLessonContainer, getColumnByDay } from './utils.js';
 import  { oneJan, weekNumber, year, edtURL, rapidApiProxyUrl } from './utils.js'
 
@@ -26,47 +26,50 @@ export async function edtLoad() {
         const response = await fetch(rapidApiProxyUrl, options);
         const data = await response.text();
         const vevents = new ICAL.Component(ICAL.parse(data)).getAllSubcomponents('vevent');
-    
-        // Supprimer les leçons précédentes
+
         removeLessons();
-    
-        // Calculer les dates de début et de fin de la semaine
+
         const startOfWeek = new Date(oneJan);
         startOfWeek.setDate(oneJan.getDate() + (weekNumber - 1) * 7);
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
-    
+
+        const lessonElements = [];
+
         vevents.forEach((vevent) => {
             const dateStart = new Date(vevent.getFirstPropertyValue('dtstart'));
             const dateEnd = new Date(vevent.getFirstPropertyValue('dtend'));
-    
-            // Vérifier si l'événement est dans la semaine sélectionnée
+
             if (dateStart >= startOfWeek && dateEnd <= endOfWeek) {
                 const summary = vevent.getFirstPropertyValue('summary');
                 const offset = (weekNumber >= 44 || weekNumber <= 13) ? 1 : 2;
                 [dateStart, dateEnd].forEach(date => date.setHours(date.getHours() + offset));
-    
+
                 const dayOfWeek = dateStart.toLocaleDateString("fr-FR", { weekday: "long" });
                 const [timePartStart, timePartEnd] = [dateStart, dateEnd].map(date => date.toISOString().split("T")[1].substring(0, 5));
                 const duration = Math.ceil((dateEnd - dateStart) / (1000 * 60 * 60)) * 3;
                 const location = (vevent.getFirstPropertyValue('location') || "").split(" - ")[0].trim() || "Inconnu";
-                const teacher = "Prof : " + summary.split(" - ")[3] || "Inconnu";
-                const lessonName = summary.split(" - ")[1]?.split(",")[0].trim() || "Inconnu";
-    
+                const teacher = "Prof : " + (summary.split(" - ")[3] || "Inconnu");
+                const lessonName = (summary.split(" - ")[1]?.split(",")[0].trim() || "Inconnu");
+
                 hours.forEach((hour) => {
                     const timeStart = `${parseInt(timePartStart.split(":")[0])}h${timePartStart.split(":")[1]}`;
                     if (hour.id === timeStart) {
                         const lessonContainer = createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour);
-                        setLessonColor(lessonContainer, summary)
-                        displayContainer.appendChild(lessonContainer);
+                        setLessonColor(lessonContainer, summary);
+                        lessonElements.push(lessonContainer);
                     }
                 });
             }
         });
+
+        displayContainer.append(...lessonElements); // Ajout d'éléments en une seule opération DOM
+        lessonTitleSize();
+        highlightVacations();
+        highlightEmptyDays();
     } catch (error) {
         console.error(error);
     }
-    
 }
 
 export function createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour) {
@@ -75,6 +78,9 @@ export function createLessonContainer(dayOfWeek, duration, lessonName, teacher, 
 
     // Définir la colonne en fonction du jour de la semaine
     lessonContainer.style.cssText = `grid-column: ${getColumnByDay(dayOfWeek)}; grid-row-start: ${hour.dataset.row}; grid-row-end: ${parseInt(hour.dataset.row) + duration};`;
+
+    // Ajouter l'attribut data-day pour le jour correspondant
+    lessonContainer.setAttribute('data-day', dayOfWeek);
 
     // Créer et ajouter les autres éléments
     const lessonType = document.createElement('div');
@@ -193,5 +199,88 @@ export function createBackgroundLines() {
         if (i % 2 == 0 && i != 10) {
             line.style.height = '2px';
         }
+    }
+}
+
+export function lessonTitleSize() {
+    lessonTitles.forEach((lessonTitle) => {
+        // Obtenez la longueur du texte dans le titre de la leçon
+        const titleTextLength = lessonTitle.textContent.length;
+    
+        // Définissez une taille de police de base
+        let fontSize = '15px';
+    
+        // Si la longueur du texte dépasse une certaine limite, réduisez la taille de la police
+        if (titleTextLength > 9) {
+            fontSize = '5px'; // Vous pouvez ajuster la taille ici selon vos besoins
+        }
+    
+        // Appliquez la taille de police calculée au titre de la leçon
+        lessonTitle.style.fontSize = fontSize;
+    });
+}
+
+export function highlightVacations() {
+    const hasLessons = displayContainer.querySelector('.lesson');
+    
+    // Vérifiez s'il existe déjà un conteneur de vacances
+    const existingVacationContainer = displayContainer.querySelector('.vacation-container');
+    
+    if (!hasLessons) {
+        // Si aucun cours n'est présent et le conteneur de vacances n'existe pas, créez-le
+        if (!existingVacationContainer) {
+            const vacationContainer = document.createElement('div');
+            vacationContainer.classList.add('vacation-container');
+            vacationContainer.style.gridColumn = '2 / 7'
+            vacationContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.3)'; // Couleur de fond transparente
+            
+            // Ajouter le conteneur au displayContainer
+            displayContainer.appendChild(vacationContainer);
+        }
+    } else {
+        // Si des leçons sont présentes, supprimer le conteneur de vacances s'il existe
+        if (existingVacationContainer) {
+            existingVacationContainer.remove();
+        }
+    }
+}
+
+export function highlightEmptyDays() {
+    // Vérifie s'il existe déjà un conteneur de vacances
+    const existingVacationContainer = displayContainer.querySelector('.vacation-container');
+
+    // Si le conteneur de vacances existe, ne pas afficher les jours vides
+    if (existingVacationContainer) {
+        return; // Quittez la fonction si le conteneur de vacances est actif
+    }
+
+    const days = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
+
+    // Supprimez les conteneurs vides précédemment créés
+    const existingEmptyContainers = displayContainer.querySelectorAll('.empty-day-container');
+    existingEmptyContainers.forEach(container => container.remove());
+
+    // Crée un tableau pour stocker les colonnes vides
+    const emptyDayContainers = [];
+
+    days.forEach((day, index) => {
+        const dayColumn = index + 2; // Colonne correspondante (lundi = 2, mardi = 3, etc.)
+        
+        // Vérifie si des leçons existent pour le jour correspondant
+        const lessonsInColumn = displayContainer.querySelectorAll(`.lesson[data-day="${day}"]`);
+
+        // Si aucune leçon n'est présente pour le jour, crée un conteneur
+        if (lessonsInColumn.length === 0) {
+            const emptyDayContainer = document.createElement('div');
+            emptyDayContainer.classList.add('empty-day-container');
+            emptyDayContainer.style.gridColumn = `${dayColumn}`; // Colonne correspondante au jour
+            emptyDayContainer.style.backgroundColor = 'rgba(255, 0, 0, 0.3)'; // Couleur de fond pour les jours vides
+            emptyDayContainers.push(emptyDayContainer); // Ajoute le conteneur à la liste
+        }
+    });
+
+    // Ajoute tous les conteneurs vides en une seule opération DOM
+    if (emptyDayContainers.length > 0) {
+        displayContainer.append(...emptyDayContainers);
     }
 }

@@ -2,7 +2,7 @@ import {
     dropdownGroup, dropdownContent, dropdown, groupButton, choosedGroup, nextWeek,
     previousWeek, startWeek, endWeek, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles
 } from './domElements.js';
-import { edtLoad, updateWeekDisplay, updateDisplay, removeLessons } from './functions.js';
+import { edtLoad, updateWeekDisplay, updateDisplay } from './functions.js';
 import  { setWeekNumber, weekNumber, setGroup, setEdtUrl, group} from './utils.js'
 
 dropdownGroup.addEventListener('click', () => {
