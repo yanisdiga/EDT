@@ -127,9 +127,9 @@ export function setLessonColor(container, summary) {
 
 export function updateWeekDisplay() {
     const dWeek = document.querySelector('.d-week');
-    let firstWeek = weekNumber - 1;
-    let secondWeek = weekNumber;
-    let thirdWeek = weekNumber + 1;
+    let firstWeek = weekNumber - 1 - 35; // -35 pour commencer 1ere semaine (septembre) a 1
+    let secondWeek = weekNumber - 35;
+    let thirdWeek = weekNumber + 1 -35;
 
     // Réinitialiser le numéro de semaine si nécessaire
     if (weekNumber > 52) {
