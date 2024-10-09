@@ -100,13 +100,13 @@ function createLessonContainer(dayOfWeek, duration, lessonName, teacher, locatio
     return lessonContainer;
 }
 
-export function getColumnByDay(day) {
+function getColumnByDay(day) {
     const days = { 'lundi': 2, 'mardi': 3, 'mercredi': 4, 'jeudi': 5, 'vendredi': 6 };
     return days[day];
 }
 
 
-export function createDiv(className, textContent) {
+function createDiv(className, textContent) {
     const div = document.createElement('div');
     div.classList.add(className);
     div.innerHTML = textContent;
@@ -160,7 +160,7 @@ export function updateWeekDisplay() {
     btnThirdWeek.style.display = (thirdWeek > 52) ? 'none' : 'inline-block'; // Masquer si > 52
 }
 
-export function getDayOfWeek(weekNumber, year, dayInWeek) {
+function getDayOfWeek(weekNumber, year, dayInWeek) {
     const firstDayOfYear = new Date(year, 0, 1);
     const dayOfWeek = firstDayOfYear.getDay(); // Le jour de la semaine du 1er janvier
     const daysToAdd = (weekNumber - 1) * 7 + dayInWeek - dayOfWeek; // Modifier ici
@@ -168,7 +168,7 @@ export function getDayOfWeek(weekNumber, year, dayInWeek) {
     return targetDate.getDate();
 }
 
-export function getMonthOfWeek(weekNumber, year) {
+function getMonthOfWeek(weekNumber, year) {
     const firstDayOfYear = new Date(year, 0, 1);
     const dayOfWeek = firstDayOfYear.getDay(); // Le jour de la semaine du 1er janvier
     const daysToAdd = (weekNumber - 1) * 7 - dayOfWeek; // Modifier ici
@@ -176,7 +176,6 @@ export function getMonthOfWeek(weekNumber, year) {
     return targetDate.getMonth() + 1;
 }
 
-let edtLoadCalled = false; // Variable de contrôle pour edtLoad
 export function updateDisplay() {
     const mondayDate = getDayOfWeek(weekNumber, year, 1);
     const month = getMonthOfWeek(weekNumber, year);
@@ -188,7 +187,7 @@ export function updateDisplay() {
     edtLoad();
 }
 
-export function adjustDay(day, month) {
+function adjustDay(day, month) {
     // Vérifier si le jour dépasse le nombre de jours dans le mois
     const lastDayOfMonth = new Date(year, month, 0).getDate();
     return day > lastDayOfMonth ? day - lastDayOfMonth : day;
@@ -210,7 +209,7 @@ export function createBackgroundLines() {
     }
 }
 
-export function lessonTitleSize() {
+function lessonTitleSize() {
     lessonTitles.forEach((lessonTitle) => {
         // Obtenez la longueur du texte dans le titre de la leçon
         const titleTextLength = lessonTitle.textContent.length;
@@ -231,7 +230,7 @@ function EmptyColor(bool) {
     if (bool) return 'rgba(217, 136, 128, 0.3)'
     else return 'rgba(204, 102, 102, 0.3)'
 }
-export function highlightVacations() {
+function highlightVacations() {
     const hasLessons = displayContainer.querySelector('.lesson');
 
     // Vérifiez s'il existe déjà un conteneur de vacances
@@ -261,7 +260,7 @@ export function highlightVacations() {
     }
 }
 
-export function highlightEmptyDays() {
+function highlightEmptyDays() {
     // Vérifie s'il existe déjà un conteneur de vacances
     const existingVacationContainer = displayContainer.querySelector('.vacation-container');
 
