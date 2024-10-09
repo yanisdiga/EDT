@@ -105,14 +105,6 @@ function getColumnByDay(day) {
     return days[day];
 }
 
-
-function createDiv(className, textContent) {
-    const div = document.createElement('div');
-    div.classList.add(className);
-    div.innerHTML = textContent;
-    return div;
-}
-
 export function setLessonColor(container, summary) {
     let defaultColor = '#6666cc'; // Darker shade of the original color
     let colors = {
@@ -144,7 +136,7 @@ export function updateWeekDisplay() {
         setWeekNumber(1); // Réinitialiser à 1 si > 52
     }
     if (weekNumber < 1) {
-        setWeekNumber(1);; // Assurer que le numéro de semaine ne soit jamais < 1
+        setWeekNumber(52); // Assurer que le numéro de semaine ne soit jamais < 1
     }
 
     // Ajuster les numéros de semaine adjacents
@@ -160,30 +152,42 @@ export function updateWeekDisplay() {
     btnThirdWeek.style.display = (thirdWeek > 52) ? 'none' : 'inline-block'; // Masquer si > 52
 }
 
-function getDayOfWeek(weekNumber, year, dayInWeek) {
-    const firstDayOfYear = new Date(year, 0, 1);
-    const dayOfWeek = firstDayOfYear.getDay(); // Le jour de la semaine du 1er janvier
-    const daysToAdd = (weekNumber - 1) * 7 + dayInWeek - dayOfWeek; // Modifier ici
-    const targetDate = new Date(year, 0, 1 + daysToAdd);
-    return targetDate.getDate();
-}
+function getDays(day, weekNumber) {
+    const daysOfWeek = {
+        monday: 1,
+        tuesday: 2,
+        wednesday: 3,
+        thursday: 4,
+        friday: 5,
+        saturday: 6,
+        sunday: 0 // En JavaScript, Sunday est le 0
+    };
 
-function getMonthOfWeek(weekNumber, year) {
-    const firstDayOfYear = new Date(year, 0, 1);
-    const dayOfWeek = firstDayOfYear.getDay(); // Le jour de la semaine du 1er janvier
-    const daysToAdd = (weekNumber - 1) * 7 - dayOfWeek; // Modifier ici
-    const targetDate = new Date(year, 0, 1 + daysToAdd);
-    return targetDate.getMonth() + 1;
+    // Vérifie si le jour est valide
+    if (!daysOfWeek[day]) {
+        throw new Error('Invalid day. Please use "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", or "sunday".');
+    }
+
+    // Vérifie si le numéro de la semaine est valide
+    if (weekNumber < 1 || weekNumber > 52) {
+        throw new Error('Week number must be between 1 and 52.');
+    }
+
+    const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const firstDayOfWeek = firstDayOfYear.getTime() + (weekNumber - 1) * 7 * 24 * 60 * 60 * 1000;
+    const targetDate = new Date(firstDayOfWeek + (daysOfWeek[day] - firstDayOfYear.getDay()) * 24 * 60 * 60 * 1000);
+    const formattedDate = `${targetDate.getDate()}/${String(targetDate.getMonth() + 1).padStart(2, '0')}`;
+    
+    return formattedDate;
 }
 
 export function updateDisplay() {
-    const mondayDate = getDayOfWeek(weekNumber, year, 1);
-    const month = getMonthOfWeek(weekNumber, year);
-    monday.textContent = `${mondayDate}/${month}`;
-    tuesday.textContent = `${adjustDay(mondayDate + 1, month)}/${month}`;
-    wednesday.textContent = `${adjustDay(mondayDate + 2, month)}/${month}`;
-    thursday.textContent = `${adjustDay(mondayDate + 3, month)}/${month}`;
-    friday.textContent = `${adjustDay(mondayDate + 4, month)}/${month}`;
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    days.forEach((day, index) => {
+        const dayDate = getDays(day, weekNumber);
+        const dayElement = document.getElementById(`${day}`);
+        dayElement.textContent = `${dayDate}`;
+    });
     edtLoad();
 }
 
