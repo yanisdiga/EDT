@@ -15,12 +15,12 @@ const groupConfigurations = {
     ASR: {
         version: '2024.0.8.0',
         icalsecurise: '',
-        param: '',
+        param: '643d5b312e2e36325d2666683d3126663d3131303030',
     },
-    MIAGE: {
+    MIAGE_I: {
         version: '2024.0.8.0',
-        icalsecurise: '',
-        param: '',
+        icalsecurise: '02F2388C911CC441B8584516B57788B91067EC065105BB46790DD6BE792F9005D94053CBD6D7E127438B0024F00D6359',
+        param: '643d5b312e2e36325d2666683d3126663d3131303030',
     },
 };
 export let edtURL = ''; // Initialisation de l'URL
