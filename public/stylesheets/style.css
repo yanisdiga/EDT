@@ -94,7 +94,8 @@ body {
   gap: 5px;
   position: absolute;
   overflow: auto;
-  height: 20%;
+  max-height: 20%;
+  padding-bottom: 1%;
   width: 175px;
   background-color: #000000;
 }
