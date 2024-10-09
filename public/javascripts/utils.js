@@ -4,7 +4,7 @@ export const currentdate = new Date();
 export let oneJan = new Date(currentdate.getFullYear(), 0, 1);
 export let numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
 export let weekNumber = Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
-export const year = currentdate.getFullYear();
+export let year = currentdate.getFullYear();
 export let group = '';
 const groupConfigurations = {
     CILS: {
@@ -29,6 +29,10 @@ export let hajarColor = localStorage.getItem('hajarColor') === 'true';
 
 export function setWeekNumber(newWeekNumber) {
     weekNumber = newWeekNumber; // Assurez-vous que 'weekNumber' est défini au début du fichier
+}
+
+export function setYear(newYear) { 
+    year = newYear;
 }
 
 export function setGroup(newGroup) {

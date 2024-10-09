@@ -1,6 +1,6 @@
 import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles, lessonsContainer } from './domElements.js';
 //import { setLessonColor, createLessonContainer, getColumnByDay } from './utils.js';
-import { oneJan, weekNumber, year, edtURL, hajarColor, setWeekNumber } from './utils.js'
+import { oneJan, weekNumber, setWeekNumber, year, setYear, edtURL, hajarColor } from './utils.js'
 
 function removeLessons() {
     const lessons = document.querySelectorAll('.lesson');
@@ -134,9 +134,11 @@ export function updateWeekDisplay() {
     // Réinitialiser le numéro de semaine si nécessaire
     if (weekNumber > 52) {
         setWeekNumber(1); // Réinitialiser à 1 si > 52
+        setYear(year + 1); // Passer à l'année suivante
     }
     if (weekNumber < 1) {
         setWeekNumber(52); // Assurer que le numéro de semaine ne soit jamais < 1
+        setYear(year - 1); // Passer à l'année précédente
     }
 
     // Ajuster les numéros de semaine adjacents
@@ -152,7 +154,7 @@ export function updateWeekDisplay() {
     btnThirdWeek.style.display = (thirdWeek > 52) ? 'none' : 'inline-block'; // Masquer si > 52
 }
 
-function getDays(day, weekNumber) {
+function getDays(day, weekNumber, year) {
     const daysOfWeek = {
         monday: 1,
         tuesday: 2,
@@ -173,18 +175,23 @@ function getDays(day, weekNumber) {
         throw new Error('Week number must be between 1 and 52.');
     }
 
-    const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
+    // Vérifie si l'année est valide
+    if (year < 1970 || year > 9999) {
+        throw new Error('Year must be between 1970 and 9999.');
+    }
+
+    const firstDayOfYear = new Date(year, 0, 1);
     const firstDayOfWeek = firstDayOfYear.getTime() + (weekNumber - 1) * 7 * 24 * 60 * 60 * 1000;
     const targetDate = new Date(firstDayOfWeek + (daysOfWeek[day] - firstDayOfYear.getDay()) * 24 * 60 * 60 * 1000);
     const formattedDate = `${targetDate.getDate()}/${String(targetDate.getMonth() + 1).padStart(2, '0')}`;
-    
+
     return formattedDate;
 }
 
 export function updateDisplay() {
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-    days.forEach((day, index) => {
-        const dayDate = getDays(day, weekNumber);
+    days.forEach((day) => {
+        const dayDate = getDays(day, weekNumber, year);
         const dayElement = document.getElementById(`${day}`);
         dayElement.textContent = `${dayDate}`;
     });
