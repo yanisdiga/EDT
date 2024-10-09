@@ -1,9 +1,13 @@
 import { edtLoad } from "./functions.js";
 
 export const currentdate = new Date();
-export let oneJan = new Date(currentdate.getFullYear(), 0, 1);
-export let numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
-export let weekNumber = Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
+export const oneJan = new Date(currentdate.getFullYear(), 0, 1);
+// Calcul des jours écoulés depuis le 1er janvier
+export const numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
+// Ajustement pour commencer la semaine le lundi
+const janFirstDayOfWeek = oneJan.getDay();
+const adjustment = (janFirstDayOfWeek === 0 ? 6 : janFirstDayOfWeek - 1);
+export const weekNumber = Math.ceil((numberOfDays + adjustment) / 7);
 export let year = currentdate.getFullYear();
 export let group = '';
 const groupConfigurations = {
