@@ -2,21 +2,26 @@ import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, les
 //import { setLessonColor, createLessonContainer, getColumnByDay } from './utils.js';
 import { oneJan, weekNumber, year, edtURL, hajarColor, setWeekNumber } from './utils.js'
 
-export function removeLessons() {
+function removeLessons() {
     const lessons = document.querySelectorAll('.lesson');
+    const emptyDayContainers = document.querySelectorAll('.empty-day-container');
+    const vacationContainer = document.querySelector('.vacation-container');
     lessons.forEach((lesson) => {
         lesson.remove();
     });
+    emptyDayContainers.forEach((container) => {
+        container.remove();
+    });
+    if (vacationContainer) vacationContainer.remove();
 }
 
 //onst url = 'https://corsproxy.io/?' + encodeURIComponent(edtURL);
 export async function edtLoad() {
+    removeLessons();
     try {
         const response = await fetch(edtURL);
         const data = await response.text();
         const vevents = new ICAL.Component(ICAL.parse(data)).getAllSubcomponents('vevent');
-
-        removeLessons();
 
         const startOfWeek = new Date(oneJan);
         startOfWeek.setDate(oneJan.getDate() + (weekNumber - 1) * 7);
@@ -60,8 +65,7 @@ export async function edtLoad() {
         console.error(error);
     }
 }
-
-export function createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour) {
+function createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour) {
     const lessonContainer = document.createElement('div');
     lessonContainer.classList.add('lesson');
 
