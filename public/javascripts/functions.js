@@ -191,12 +191,6 @@ export function updateDisplay() {
     edtLoad();
 }
 
-function adjustDay(day, month) {
-    // Vérifier si le jour dépasse le nombre de jours dans le mois
-    const lastDayOfMonth = new Date(year, month, 0).getDate();
-    return day > lastDayOfMonth ? day - lastDayOfMonth : day;
-}
-
 export function createBackgroundLines() {
     const backgroundLines = document.querySelector('.display');
     for (let i = 0; i < 26; i++) {
