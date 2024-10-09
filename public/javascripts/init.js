@@ -1,10 +1,10 @@
 import { choosedGroup, groupButton } from './domElements.js';
-import { group, setGroup} from './utils.js';
+import { edtURL, group, setEdtUrl, setGroup} from './utils.js';
 import { updateWeekDisplay, updateDisplay, createBackgroundLines, edtLoad } from './functions.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedGroup = localStorage.getItem('selectedGroup');
-    if (savedGroup) {
+    if (savedGroup !== null && savedGroup !== '') {
         setGroup(savedGroup);
         groupButton.forEach((button) => {
             if (button.id == group) {
@@ -12,9 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     } else {
-        setGroup('CILS')
+        setGroup('CILS');
         choosedGroup.textContent = 'L3 - CILS';
     }
+    console.log(group);
+    console.log(edtURL);
     updateWeekDisplay();
     updateDisplay();
     createBackgroundLines();

@@ -9,10 +9,10 @@ export function removeLessons() {
     });
 }
 
-const url = 'https://corsproxy.io/?' + encodeURIComponent(edtURL);
+//onst url = 'https://corsproxy.io/?' + encodeURIComponent(edtURL);
 export async function edtLoad() {
     try {
-        const response = await fetch(url);
+        const response = await fetch(edtURL);
         const data = await response.text();
         const vevents = new ICAL.Component(ICAL.parse(data)).getAllSubcomponents('vevent');
 
