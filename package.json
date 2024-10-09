@@ -3,21 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"node proxy.js\" \"node bin/www\""
+    "start": "node bin/www"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "cors-anywhere": "^0.4.4",
-    "debug": "~2.6.9",
-    "ejs": "~2.6.1",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
+    "express": "^4.21.1",
     "ical.js": "^1.5.0",
-    "morgan": "~1.9.1",
-    "path": "^0.12.7",
-    "request": "^2.88.2"
+    "path": "^0.12.7"
   },
-  "description": "edt for univ evry",
+  "description": "schedule for univ evry",
   "main": "server.js",
   "author": "yanisdiga",
   "license": "ISC"
