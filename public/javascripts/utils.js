@@ -7,7 +7,7 @@ export const numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 
 // Ajustement pour commencer la semaine le lundi
 const janFirstDayOfWeek = oneJan.getDay();
 const adjustment = (janFirstDayOfWeek === 0 ? 6 : janFirstDayOfWeek - 1);
-export const weekNumber = Math.ceil((numberOfDays + adjustment) / 7);
+export let weekNumber = Math.ceil((numberOfDays + adjustment) / 7);
 export let year = currentdate.getFullYear();
 export let group = '';
 const groupConfigurations = {
