@@ -29,7 +29,7 @@ const groupConfigurations = {
 };
 export let edtURL = ''; // Initialisation de l'URL
 const corsproxy = 'https://corsproxy.io/?';
-export let hajarColor = localStorage.getItem('hajarColor') === 'true';
+export let changeColor = localStorage.getItem('changeColor') === 'true';
 
 export function setWeekNumber(newWeekNumber) {
     weekNumber = newWeekNumber; // Assurez-vous que 'weekNumber' est défini au début du fichier
@@ -52,8 +52,8 @@ export function setEdtUrl(group) {
         console.error(`Group ${group} is not defined in groupConfigurations.`);
     }
 }
-export function setHajarColor(newColor) {
-    hajarColor = newColor;
-    localStorage.setItem('hajarColor', hajarColor);
+export function setColor(newColor) {
+    changeColor = newColor;
+    localStorage.setItem('changeColor', changeColor);
     edtLoad();
 }

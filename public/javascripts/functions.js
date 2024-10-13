@@ -1,5 +1,5 @@
 import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles } from './domElements.js';
-import { oneJan, weekNumber, setWeekNumber, year, setYear, edtURL, hajarColor, currentdate } from './utils.js'
+import { oneJan, weekNumber, setWeekNumber, year, setYear, edtURL, changeColor, currentdate } from './utils.js'
 
 function removeLessons() {
     const lessons = document.querySelectorAll('.lesson');
@@ -72,6 +72,13 @@ export async function edtLoad() {
     }
 }
 
+function createDivParam(className, textContent) {
+    const div = document.createElement('div');
+    div.classList.add(className);
+    div.textContent = textContent;
+    return div;
+}
+
 function createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour) {
     const lessonContainer = document.createElement('div');
     lessonContainer.classList.add('lesson');
@@ -82,22 +89,10 @@ function createLessonContainer(dayOfWeek, duration, lessonName, teacher, locatio
     // Ajouter l'attribut data-day pour le jour correspondant
     lessonContainer.setAttribute('data-day', dayOfWeek);
 
-    // Créer et ajouter les autres éléments
-    const lessonType = document.createElement('div');
-    lessonType.classList.add('lesson-type');
-    lessonType.innerHTML = summary.split("-")[0] + ' - ' + '<span>' + timePartStart + ' - ' + timePartEnd + '</span>';
-
-    const lessonTitle = document.createElement('div');
-    lessonTitle.classList.add('lesson-title');
-    lessonTitle.textContent = lessonName;
-
-    const lessonTeacher = document.createElement('div');
-    lessonTeacher.classList.add('lesson-teacher');
-    lessonTeacher.textContent = teacher;
-
-    const lessonRoom = document.createElement('div');
-    lessonRoom.classList.add('lesson-room');
-    lessonRoom.textContent = "Salle : " + location;
+    const lessonType = createDivParam('lesson-type', summary.split("-")[0] + ' - ' + timePartStart + ' - ' + timePartEnd);
+    const lessonTitle = createDivParam('lesson-title', lessonName);
+    const lessonTeacher = createDivParam('lesson-teacher', teacher);
+    const lessonRoom = createDivParam('lesson-room', "Salle : " + location);
 
     lessonContainer.appendChild(lessonType);
     lessonContainer.appendChild(lessonTitle);
@@ -118,7 +113,7 @@ export function setLessonColor(container, summary) {
         'TD': '#66cc66', 'TP': '#66cc66', 'CM': '#66a3cc', 'DS': '#cc6666', 'EXAMEN': '#cc6666' };
 
     if (container) container.style.color = '#ffffff';
-    if (hajarColor) {
+    if (changeColor) {
         colors = { 'TD': '#ffc6b3', 'TP': '#00FF00', 'CM': '#e5e7e9', 'DS': '#d2b4de', 'EXAMEN': '#d2b4de' };
         if (container) container.style.color = '#333333';
         defaultColor = '#FEF5E7';
@@ -255,10 +250,10 @@ function highlightVacations() {
         vacationContainer.classList.add('vacation-container');
         vacationContainer.style = `
             grid-column: 2/7;
-            background-color: ${EmptyColor(hajarColor)};
+            background-color: ${EmptyColor(changeColor)};
             background-image: repeating-linear-gradient(45deg,
-                ${EmptyColor(hajarColor)},
-                ${EmptyColor(hajarColor)} 10px,
+                ${EmptyColor(changeColor)},
+                ${EmptyColor(changeColor)} 10px,
                 transparent 10px,
                 transparent 20px);`
             ;
@@ -302,10 +297,10 @@ function highlightEmptyDays() {
             emptyDayContainer.classList.add('empty-day-container');
             emptyDayContainer.style = `
                 grid-column: ${dayColumn};
-                background-color: ${EmptyColor(hajarColor)};
+                background-color: ${EmptyColor(changeColor)};
                 background-image: repeating-linear-gradient(45deg,
-                    ${EmptyColor(hajarColor)},
-                    ${EmptyColor(hajarColor)} 10px,
+                    ${EmptyColor(changeColor)},
+                    ${EmptyColor(changeColor)} 10px,
                     transparent 10px,
                     transparent 20px);`
                 ;

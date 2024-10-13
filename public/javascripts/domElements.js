@@ -13,5 +13,5 @@ export const btnFirstWeek = document.getElementById('first-week');
 export const btnSecondWeek = document.getElementById('second-week');
 export const btnThirdWeek = document.getElementById('third-week');
 export const lessonTitles = document.querySelectorAll('.lesson-title');
-export const hajarBtn = document.querySelector('.hajarBtn')
+export const colorBtn = document.querySelector('.colorBtn')
 export const lessonsContainer = document.querySelectorAll('.lesson')
