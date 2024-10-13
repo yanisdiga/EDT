@@ -1,6 +1,6 @@
 import { choosedGroup, groupButton } from './domElements.js';
 import { edtURL, group, setGroup} from './utils.js';
-import { updateWeekDisplay, updateDisplay, createBackgroundLines, edtLoad } from './functions.js';
+import { updateWeekDisplay, updateDisplay, createBackgroundLines, edtLoad, goToNextWeekIfSaturday } from './functions.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const savedGroup = localStorage.getItem('selectedGroup');
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setGroup('CILS');
         choosedGroup.textContent = 'L3 - CILS';
     }
+    goToNextWeekIfSaturday();
     updateWeekDisplay();
     updateDisplay();
     createBackgroundLines();

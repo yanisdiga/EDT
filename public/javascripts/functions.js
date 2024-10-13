@@ -1,6 +1,5 @@
-import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles, lessonsContainer } from './domElements.js';
-//import { setLessonColor, createLessonContainer, getColumnByDay } from './utils.js';
-import { oneJan, weekNumber, setWeekNumber, year, setYear, edtURL, hajarColor } from './utils.js'
+import { displayContainer, hours, btnFirstWeek, btnSecondWeek, btnThirdWeek, lessonTitles } from './domElements.js';
+import { oneJan, weekNumber, setWeekNumber, year, setYear, edtURL, hajarColor, currentdate } from './utils.js'
 
 function removeLessons() {
     const lessons = document.querySelectorAll('.lesson');
@@ -15,7 +14,14 @@ function removeLessons() {
     if (vacationContainer) vacationContainer.remove();
 }
 
-//onst url = 'https://corsproxy.io/?' + encodeURIComponent(edtURL);
+export function goToNextWeekIfSaturday() {
+    const dayOfWeek = currentdate.getDay(); // 0 = dimanche, 1 = lundi, ..., 6 = samedi
+    if (dayOfWeek === 6 || dayOfWeek === 0) { // Si c'est samedi ou dimanche
+        setWeekNumber(weekNumber + 1); // Passer à la semaine suivante
+    }
+}
+
+// const url = 'https://corsproxy.io/?' + encodeURIComponent(edtURL);
 export async function edtLoad() {
     removeLessons();
     try {
@@ -65,6 +71,7 @@ export async function edtLoad() {
         console.error(error);
     }
 }
+
 function createLessonContainer(dayOfWeek, duration, lessonName, teacher, location, summary, timePartStart, timePartEnd, hour) {
     const lessonContainer = document.createElement('div');
     lessonContainer.classList.add('lesson');
