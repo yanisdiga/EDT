@@ -16,7 +16,7 @@ function removeLessons() {
 
 export function goToNextWeekIfSaturday() {
     const dayOfWeek = currentdate.getDay(); // 0 = dimanche, 1 = lundi, ..., 6 = samedi
-    if (dayOfWeek === 6 || dayOfWeek === 0) { // Si c'est samedi ou dimanche
+    if (dayOfWeek === 6 || dayOfWeek === 0 || dayOfWeek === 1) { // Si c'est samedi ou dimanche
         setWeekNumber(weekNumber + 1); // Passer à la semaine suivante
     }
 }
